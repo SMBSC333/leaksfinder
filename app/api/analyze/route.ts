@@ -18,7 +18,8 @@ export async function POST(request: Request) {
       marketingChannels,
       trackingSystem,
       followUpProcess,
-      biggestChallenge
+      biggestChallenge,
+      jumpstart12Answers
     } = body
     
     // Validate required fields
@@ -29,43 +30,85 @@ export async function POST(request: Request) {
       )
     }
     
-    // Construct the prompt for OpenAI
-    const prompt = `
-      You are an expert business consultant specializing in identifying profit leaks in small businesses.
-			You're following the Profit Acceleration Software method here, so make sure that you tailor your responses to the Jumpstart 12.
-      
-      Analyze the following business information and identify 3-5 key areas where this business is likely losing money or missing profit opportunities:
-      
-      Business Type: ${businessType}
-      Annual Revenue: ${revenue}
-      Number of Employees: ${employees}
-      Marketing Channels Used: ${marketingChannels ? marketingChannels.join(', ') : 'None specified'}
-      Lead/Customer Tracking System: ${trackingSystem}
-      Follow-up Process: ${followUpProcess}
-      Biggest Business Challenge: "${biggestChallenge}"
-      
-      For each profit leak identified:
-      1. Provide a clear title
-      2. Explain why it's a problem and how it's likely affecting their business
-      3. Rate the potential impact as Low, Medium, High, or Critical
-      
-      Also provide:
-      - A brief summary of your findings
-      - A recommendation for next steps
-      
-      Format your response as JSON with the following structure:
-      {
-        "summary": "Brief overview of findings",
-        "profitLeaks": [
-          {
-            "title": "Name of the profit leak",
-            "description": "Detailed explanation",
-            "potentialImpact": "Impact level"
-          }
-        ],
-        "recommendation": "Suggested next steps"
-      }
-    `
+    // Determine which prompt to use based on whether we have Jumpstart 12 answers
+    let prompt = ''
+    
+    if (jumpstart12Answers && jumpstart12Answers.length > 50) {
+      // Use the enhanced Jumpstart 12 prompt
+      prompt = `
+        You are a Profit Acceleration Software-certified consultant, skilled at identifying hidden profit leaks in small businesses using the Jumpstart 12 methodology.
+
+        Analyze the following business information and identify 3–5 profit leaks based on the Jumpstart 12 framework:
+
+        ${jumpstart12Answers}
+
+        For each profit leak:
+        1. Give it a clear title
+        2. Explain why it's a problem and how it's costing the business money
+        3. Rate the potential impact: Low, Medium, High, or Critical
+        4. Provide 3 actionable steps to fix it
+
+        Also provide:
+        - A brief summary of your findings
+        - A recommendation for what the business owner should do next
+
+        Respond in this JSON format:
+        {
+          "summary": "Brief overview of findings",
+          "profitLeaks": [
+            {
+              "title": "Name of the profit leak",
+              "description": "Explanation of the issue and its impact",
+              "potentialImpact": "Low | Medium | High | Critical",
+              "actionableInsights": [
+                "Step 1",
+                "Step 2",
+                "Step 3"
+              ]
+            }
+          ],
+          "recommendation": "Next step for the business owner"
+        }
+      `
+    } else {
+      // Use the original prompt
+      prompt = `
+        You are an expert business consultant specializing in identifying profit leaks in small businesses with the Profit Accelerator Software framework.
+        Right now, I want you to think about their Jumpstart 12 and focus your responses on how they can address these profit leaks.
+        
+        Analyze the following business information and identify 3-5 key areas where this business is likely losing money or missing profit opportunities:
+        
+        Business Type: ${businessType}
+        Annual Revenue: ${revenue}
+        Number of Employees: ${employees}
+        Marketing Channels Used: ${marketingChannels ? marketingChannels.join(', ') : 'None specified'}
+        Lead/Customer Tracking System: ${trackingSystem}
+        Follow-up Process: ${followUpProcess}
+        Biggest Business Challenge: "${biggestChallenge}"
+        
+        For each profit leak identified:
+        1. Provide a clear title
+        2. Explain why it's a problem and how it's likely affecting their business
+        3. Rate the potential impact as Low, Medium, High, or Critical
+        
+        Also provide:
+        - A brief summary of your findings
+        - A recommendation for next steps
+        
+        Format your response as JSON with the following structure:
+        {
+          "summary": "Brief overview of findings",
+          "profitLeaks": [
+            {
+              "title": "Name of the profit leak",
+              "description": "Detailed explanation",
+              "potentialImpact": "Impact level"
+            }
+          ],
+          "recommendation": "Suggested next steps"
+        }
+      `
+    }
     
     // In a real implementation, you would call the OpenAI API here
     // For this example, we'll simulate the response in the client

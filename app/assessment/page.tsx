@@ -13,6 +13,7 @@ type FormData = {
   trackingSystem: string
   followUpProcess: string
   biggestChallenge: string
+  jumpstart12Answers: string
 }
 
 export default function Assessment() {
@@ -20,7 +21,7 @@ export default function Assessment() {
   const [step, setStep] = useState(1)
   const router = useRouter()
   
-  const totalSteps = 3
+  const totalSteps = 4
   
   const onSubmit = async (data: FormData) => {
     try {
@@ -256,6 +257,47 @@ export default function Assessment() {
                 ></textarea>
                 {errors.biggestChallenge && (
                   <p className="text-red-500 text-sm mt-1">{errors.biggestChallenge.message}</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {step === 4 && (
+            <div className="space-y-6">
+              <div className="bg-primary-50 border-l-4 border-primary-500 p-4 mb-6">
+                <h3 className="font-bold text-lg mb-2">Jumpstart 12 Framework</h3>
+                <p className="text-secondary-700">
+                  To help uncover hidden profit leaks in your business and suggest ways to fix them, please answer these 12 quick questions below.
+                </p>
+              </div>
+              
+              <div>
+                <label className="block text-secondary-700 font-medium mb-2">
+                  Your Detailed Business Information
+                </label>
+                <textarea 
+                  {...register('jumpstart12Answers', { 
+                    required: 'Please answer the Jumpstart 12 questions',
+                    minLength: { value: 50, message: 'Please provide more detailed answers' }
+                  })}
+                  className="input-field min-h-[400px]"
+                  placeholder={`Please answer each question below:
+
+1. What type of business do you run?  
+2. What is your annual revenue (rough estimate is fine)?  
+3. How many people work in your business (including you)?  
+4. Where do most of your leads or customers come from?  
+5. How do you keep track of leads and customers (CRM, spreadsheet, notebook, etc.)?  
+6. Do you follow up with leads who don't buy right away? If yes, how?  
+7. What's the biggest challenge your business is facing right now?  
+8. What happens after someone buys from you? Do they buy again?  
+9. Do you offer any add-ons, upgrades, or other services after the first sale?  
+10. Do you get referrals from happy customers? How do you encourage them?  
+11. How do you decide what to charge for your products/services?  
+12. What's one thing you wish you could improve or automate in your business?`}
+                ></textarea>
+                {errors.jumpstart12Answers && (
+                  <p className="text-red-500 text-sm mt-1">{errors.jumpstart12Answers.message}</p>
                 )}
               </div>
             </div>
