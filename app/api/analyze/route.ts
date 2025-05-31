@@ -59,6 +59,9 @@ export async function POST(request: Request) {
       - A brief summary of your findings
       - A recommendation for what the business owner should do next
 
+			Added note for tone:
+			- Be personable and friendly in your response. Don't say the business owner when referring to the user.
+
       Respond in this JSON format:
       {
         "summary": "Brief overview of findings",
