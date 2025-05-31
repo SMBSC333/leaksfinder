@@ -78,17 +78,7 @@ export async function POST(request: Request) {
       }
     `
     
-    // In a real implementation, you would call the OpenAI API here
-    // For this example, we'll simulate the response in the client
-    // to avoid requiring an actual API key
-    
-    return NextResponse.json({ 
-      success: true,
-      message: 'Analysis request received. In a production environment, this would call the OpenAI API.'
-    })
-    
-    /* Commented out actual OpenAI implementation:
-    
+    // Call the OpenAI API
     const response = await openai.chat.completions.create({
       model: "gpt-4",
       messages: [
@@ -120,7 +110,6 @@ export async function POST(request: Request) {
     }
     
     return NextResponse.json(analysisJson)
-    */
     
   } catch (error) {
     console.error('Error in analyze route:', error)

@@ -29,7 +29,7 @@ type ProfitLeak = {
   title: string
   description: string
   potentialImpact: string
-  actionableInsights?: string[]
+  actionableInsights: string[]
 }
 
 type AnalysisResult = {
@@ -42,6 +42,7 @@ export default function Results() {
   const [loading, setLoading] = useState(true)
   const [formData, setFormData] = useState<FormData | null>(null)
   const [results, setResults] = useState<AnalysisResult | null>(null)
+  const [error, setError] = useState<string | null>(null)
   const router = useRouter()
 
   useEffect(() => {
@@ -57,21 +58,30 @@ export default function Results() {
     const parsedData = JSON.parse(storedData) as FormData
     setFormData(parsedData)
     
-    // Simulate API call to OpenAI
+    // Call the API to analyze the data
     const analyzeData = async () => {
       try {
         setLoading(true)
         
-        // In a real implementation, this would be an API call to your backend
-        // which would then call the OpenAI API
-        // For demo purposes, we'll simulate a response after a delay
-        await new Promise(resolve => setTimeout(resolve, 2000))
+        // Call our API route
+        const response = await fetch('/api/analyze', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(parsedData),
+        })
         
-        // Generate a simulated analysis based on the form data
-        const analysis = generateAnalysis(parsedData)
-        setResults(analysis)
+        if (!response.ok) {
+          const errorData = await response.json()
+          throw new Error(errorData.error || 'Failed to analyze data')
+        }
+        
+        const data = await response.json()
+        setResults(data)
       } catch (error) {
         console.error('Error analyzing data:', error)
+        setError(error instanceof Error ? error.message : 'An unknown error occurred')
       } finally {
         setLoading(false)
       }
@@ -79,153 +89,6 @@ export default function Results() {
     
     analyzeData()
   }, [router])
-  
-  // This function simulates what would normally be done by the OpenAI API
-  const generateAnalysis = (data: FormData): AnalysisResult => {
-    // Map business type to readable format
-    const businessTypeMap: Record<string, string> = {
-      'service': 'service-based business',
-      'product': 'product-based business',
-      'brick-mortar': 'brick & mortar business',
-      'online': 'online store',
-      'consulting': 'consulting/coaching business',
-      'other': 'business'
-    }
-    
-    const businessTypeReadable = businessTypeMap[data.businessType] || 'business'
-    
-    // Generate profit leaks based on form data
-    const profitLeaks: ProfitLeak[] = []
-    
-    // Check tracking system
-    if (['spreadsheet', 'paper', 'none'].includes(data.trackingSystem)) {
-      profitLeaks.push({
-        title: 'Inadequate Lead & Customer Tracking',
-        description: `Your ${data.trackingSystem === 'none' ? 'lack of a' : data.trackingSystem} tracking system is likely causing leads to fall through the cracks. Without a robust CRM, you're probably missing follow-up opportunities and losing potential revenue.`,
-        potentialImpact: 'High',
-        actionableInsights: [
-          'Implement a simple CRM system designed for your business size and type',
-          'Create a standardized process for entering all new leads and contacts',
-          'Schedule weekly time to review your pipeline and identify stalled opportunities'
-        ]
-      })
-    }
-    
-    // Check follow-up process
-    if (['no', 'unsure'].includes(data.followUpProcess)) {
-      profitLeaks.push({
-        title: 'Inconsistent Follow-Up Process',
-        description: 'Your current follow-up approach is reactive or inconsistent, which typically results in lost sales opportunities. Systematic follow-up can increase conversion rates by 30-50%.',
-        potentialImpact: 'High',
-        actionableInsights: [
-          'Create a standardized follow-up sequence with specific timing',
-          'Develop email or message templates for common follow-up scenarios',
-          'Set up automated reminders to ensure consistent follow-up execution'
-        ]
-      })
-    }
-    
-    // Check upsells
-    if (['no', 'unsure'].includes(data.offerUpsells)) {
-      profitLeaks.push({
-        title: 'Missed Upsell Opportunities',
-        description: 'You\'re not maximizing the value of each customer by offering additional products or services. This is leaving significant revenue on the table with every transaction.',
-        potentialImpact: 'Medium',
-        actionableInsights: [
-          'Identify 2-3 natural upsell or cross-sell opportunities for your main offerings',
-          'Create a simple script or process for offering these additional options',
-          'Train your team on how to present these options as added value, not just "selling more"'
-        ]
-      })
-    }
-    
-    // Check pricing strategy
-    if (['match-competitors', 'unsure'].includes(data.pricingStrategy)) {
-      profitLeaks.push({
-        title: 'Suboptimal Pricing Strategy',
-        description: 'Your approach to pricing may be leaving significant profit on the table. Matching competitors or lacking a clear strategy often leads to underpricing and reduced margins.',
-        potentialImpact: 'Critical',
-        actionableInsights: [
-          'Conduct a value-based pricing analysis for your top products/services',
-          'Test incremental price increases (10-15%) with new customers',
-          'Enhance your value communication to justify premium pricing'
-        ]
-      })
-    }
-    
-    // Check marketing channels
-    if (!data.leadSources || data.leadSources.length < 3) {
-      profitLeaks.push({
-        title: 'Limited Marketing Channels',
-        description: 'You\'re relying on too few lead sources, which limits your reach and makes your business vulnerable to changes in any single channel.',
-        potentialImpact: 'Medium',
-        actionableInsights: [
-          'Identify 2-3 new marketing channels that align with your target audience',
-          'Start with small tests on each new channel before scaling investment',
-          'Create a simple tracking system to measure which channels produce the best ROI'
-        ]
-      })
-    }
-    
-    // Add a leak based on their biggest improvement area
-    if (data.biggestImprovement.toLowerCase().includes('customer') || data.biggestImprovement.toLowerCase().includes('lead')) {
-      profitLeaks.push({
-        title: 'Customer Acquisition Challenges',
-        description: 'Your biggest challenge involves finding or converting customers, which often indicates issues with your marketing messaging, targeting, or sales process.',
-        potentialImpact: 'High',
-        actionableInsights: [
-          'Revisit your ideal customer profile and ensure your messaging speaks directly to their needs',
-          'Analyze your sales conversion process to identify where prospects are dropping off',
-          'Test different value propositions to see which resonates most with your target market'
-        ]
-      })
-    } else if (data.biggestImprovement.toLowerCase().includes('cash') || data.biggestImprovement.toLowerCase().includes('finance')) {
-      profitLeaks.push({
-        title: 'Cash Flow Management Issues',
-        description: 'Your cash flow challenges may be stemming from inconsistent invoicing, lack of financial forecasting, or insufficient profit margins on your products/services.',
-        potentialImpact: 'Critical',
-        actionableInsights: [
-          'Implement a weekly cash flow forecasting process',
-          'Review your pricing strategy and consider increases where value justifies it',
-          'Analyze payment terms and consider incentives for early payment'
-        ]
-      })
-    } else if (data.biggestImprovement.toLowerCase().includes('time') || data.biggestImprovement.toLowerCase().includes('busy')) {
-      profitLeaks.push({
-        title: 'Time Management & Delegation Gaps',
-        description: 'You\'re likely spending too much time on low-value activities that could be automated, delegated, or eliminated, preventing you from focusing on growth.',
-        potentialImpact: 'Medium',
-        actionableInsights: [
-          'Track your time for one week to identify where your hours are going',
-          'Create standard operating procedures (SOPs) for recurring tasks',
-          'Identify your highest-value activities and block time for them first'
-        ]
-      })
-    }
-    
-    // If we don't have enough leaks yet, add some general ones
-    if (profitLeaks.length < 3) {
-      profitLeaks.push({
-        title: 'Untapped Customer Value',
-        description: 'Most businesses fail to maximize revenue from existing customers. You may be missing opportunities for upsells, cross-sells, or implementing a systematic referral program.',
-        potentialImpact: 'Medium',
-        actionableInsights: [
-          'Map your customer journey to identify natural upsell/cross-sell opportunities',
-          'Create a formal referral program with incentives for both parties',
-          'Segment your customer base and develop targeted offers for each segment'
-        ]
-      })
-    }
-    
-    // Limit to 3-5 leaks
-    const finalProfitLeaks = profitLeaks.slice(0, Math.min(5, Math.max(3, profitLeaks.length)))
-    
-    return {
-      summary: `Based on your assessment, we've identified ${finalProfitLeaks.length} key areas where your ${businessTypeReadable} is likely leaving money on the table. Addressing these profit leaks could significantly improve your bottom line.`,
-      profitLeaks: finalProfitLeaks,
-      recommendation: 'To dive deeper into these profit leaks and develop a customized action plan, we recommend scheduling a free strategy session with our business optimization experts.'
-    }
-  }
   
   if (loading) {
     return (
@@ -242,7 +105,7 @@ export default function Results() {
     )
   }
   
-  if (!results) {
+  if (error || !results) {
     return (
       <main className="py-12 max-w-3xl mx-auto">
         <div className="card text-center py-16">
@@ -251,7 +114,7 @@ export default function Results() {
           </svg>
           <h2 className="text-2xl font-bold mb-4">Something Went Wrong</h2>
           <p className="text-secondary-600 mb-8">
-            We couldn't generate your analysis. Please try again.
+            {error || "We couldn't generate your analysis. Please try again."}
           </p>
           <Link href="/assessment" className="btn btn-primary">
             Restart Assessment
