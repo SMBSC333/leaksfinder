@@ -32,6 +32,7 @@ export async function POST(request: Request) {
     // Construct the prompt for OpenAI
     const prompt = `
       You are an expert business consultant specializing in identifying profit leaks in small businesses.
+			You're following the Profit Acceleration Software method here, so make sure that you tailor your responses to the Jumpstart 12.
       
       Analyze the following business information and identify 3-5 key areas where this business is likely losing money or missing profit opportunities:
       
