@@ -94,6 +94,11 @@ export async function POST(request: Request) {
     let analysisJson
     
     try {
+      // Fix: Add null check for analysisText
+      if (!analysisText) {
+        throw new Error('No response content received from OpenAI')
+      }
+      
       // Extract JSON from the response
       const jsonMatch = analysisText.match(/\{[\s\S]*\}/)
       if (jsonMatch) {
