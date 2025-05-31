@@ -32,9 +32,25 @@ type ProfitLeak = {
   actionableInsights: string[]
 }
 
+type ProfitPerformanceScore = {
+  score: number
+  label: string
+  summary: string
+}
+
+type EstimatedRecoveryRange = {
+  monthlyMin: number
+  monthlyMax: number
+  note: string
+}
+
 type AnalysisResult = {
+  profitPerformanceScore: ProfitPerformanceScore
+  empathyMessage: string
   summary: string
   profitLeaks: ProfitLeak[]
+  patchPlan: string[]
+  estimatedRecoveryRange?: EstimatedRecoveryRange
   recommendation: string
 }
 
@@ -124,6 +140,28 @@ export default function Results() {
     )
   }
   
+  // Helper function to get score color
+  const getScoreColor = (score: number) => {
+    if (score >= 80) return 'bg-green-100 text-green-800'
+    if (score >= 60) return 'bg-yellow-100 text-yellow-800'
+    if (score >= 40) return 'bg-orange-100 text-orange-800'
+    return 'bg-red-100 text-red-800'
+  }
+  
+  // Helper function to get impact color
+  const getImpactColor = (impact: string) => {
+    switch (impact.toLowerCase()) {
+      case 'critical':
+        return 'bg-red-100 text-red-800'
+      case 'high':
+        return 'bg-orange-100 text-orange-800'
+      case 'medium':
+        return 'bg-yellow-100 text-yellow-800'
+      default:
+        return 'bg-blue-100 text-blue-800'
+    }
+  }
+  
   return (
     <main className="py-12 max-w-3xl mx-auto">
       <Link href="/" className="inline-flex items-center text-primary-600 mb-6 hover:text-primary-700">
@@ -133,6 +171,7 @@ export default function Results() {
         Back to Home
       </Link>
       
+      {/* Profit Performance Score */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -146,12 +185,30 @@ export default function Results() {
             </svg>
           </div>
         </div>
-        <h1 className="text-3xl font-bold text-center mb-6">Your Profit Leaks Analysis</h1>
+        
+        <h1 className="text-3xl font-bold text-center mb-4">Your Profit Leaks Analysis</h1>
+        
+        <div className="flex justify-center mb-6">
+          <div className={`text-center px-4 py-2 rounded-full ${getScoreColor(results.profitPerformanceScore.score)}`}>
+            <span className="font-bold">Your Profit Performance Score: {results.profitPerformanceScore.score}/100</span>
+            <span className="ml-2">({results.profitPerformanceScore.label})</span>
+          </div>
+        </div>
+        
+        <p className="text-center text-lg mb-6">{results.profitPerformanceScore.summary}</p>
+        
+        {/* Empathy Message */}
         <div className="bg-primary-50 border-l-4 border-primary-500 p-4 mb-6">
+          <p className="text-lg">{results.empathyMessage}</p>
+        </div>
+        
+        {/* Summary */}
+        <div className="mb-6">
           <p className="text-lg">{results.summary}</p>
         </div>
       </motion.div>
       
+      {/* Profit Leaks */}
       <h2 className="text-2xl font-bold mb-4">Key Profit Leaks Identified:</h2>
       
       <div className="space-y-6 mb-8">
@@ -165,11 +222,7 @@ export default function Results() {
           >
             <div className="flex justify-between items-start mb-3">
               <h3 className="text-xl font-bold">{leak.title}</h3>
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                leak.potentialImpact === 'High' || leak.potentialImpact === 'Critical' 
-                  ? 'bg-red-100 text-red-800' 
-                  : 'bg-yellow-100 text-yellow-800'
-              }`}>
+              <span className={`px-3 py-1 rounded-full text-sm font-medium ${getImpactColor(leak.potentialImpact)}`}>
                 {leak.potentialImpact} Impact
               </span>
             </div>
@@ -189,6 +242,52 @@ export default function Results() {
         ))}
       </div>
       
+      {/* Profit Patch Plan */}
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5, delay: 0.3 }}
+        className="card border-2 border-accent-300 mb-8"
+      >
+        <h2 className="text-2xl font-bold mb-4 flex items-center">
+          <span className="mr-2">🧰</span> Your Profit Patch Plan
+        </h2>
+        <p className="text-secondary-700 mb-4">Here are your top 3 action steps to start plugging those profit leaks:</p>
+        <ul className="space-y-3">
+          {results.patchPlan.map((step, index) => (
+            <li key={index} className="flex items-start">
+              <div className="bg-accent-100 text-accent-800 rounded-full w-6 h-6 flex items-center justify-center mr-3 mt-0.5 flex-shrink-0">
+                {index + 1}
+              </div>
+              <p className="text-secondary-800">{step}</p>
+            </li>
+          ))}
+        </ul>
+      </motion.div>
+      
+      {/* Estimated Recovery Range */}
+      {results.estimatedRecoveryRange && (
+        <motion.div 
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="card bg-green-50 border border-green-200 mb-8"
+        >
+          <h2 className="text-2xl font-bold mb-4 flex items-center">
+            <span className="mr-2">💸</span> Estimated Monthly Revenue Recovery
+          </h2>
+          <div className="text-center mb-4">
+            <span className="text-3xl font-bold text-green-700">
+              ${results.estimatedRecoveryRange.monthlyMin.toLocaleString()} – ${results.estimatedRecoveryRange.monthlyMax.toLocaleString()}
+            </span>
+          </div>
+          <p className="text-secondary-700 text-center italic">
+            {results.estimatedRecoveryRange.note}
+          </p>
+        </motion.div>
+      )}
+      
+      {/* Next Steps */}
       <motion.div 
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
@@ -207,6 +306,7 @@ export default function Results() {
         </a>
       </motion.div>
       
+      {/* Share Results */}
       <div className="text-center">
         <p className="text-secondary-500 mb-4">Want to share this analysis with a colleague?</p>
         <button 
