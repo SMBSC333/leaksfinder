@@ -6,14 +6,23 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 type FormData = {
+  // Section 1: Business Basics
   businessType: string
+  businessOffering: string
   revenue: string
   employees: string
-  marketingChannels: string[]
+  
+  // Section 2: Marketing & Lead Flow
+  leadSources: string[]
   trackingSystem: string
+  
+  // Section 3: Sales & Follow-Up
   followUpProcess: string
-  biggestChallenge: string
-  jumpstart12Answers: string
+  offerUpsells: string
+  
+  // Section 4: Profit Potential & Bottlenecks
+  pricingStrategy: string
+  biggestImprovement: string
 }
 
 export default function Assessment() {
@@ -61,23 +70,30 @@ export default function Assessment() {
         </div>
         
         <form onSubmit={handleSubmit(onSubmit)}>
+          {/* SECTION 1: Business Basics */}
           {step === 1 && (
             <div className="space-y-6">
+              <div className="bg-primary-50 border-l-4 border-primary-500 p-4 mb-6">
+                <h3 className="font-bold text-lg mb-1">🧩 Business Basics</h3>
+                <p className="text-secondary-700">
+                  Let's start with some fundamental information about your business.
+                </p>
+              </div>
+              
               <div>
                 <label className="block text-secondary-700 font-medium mb-2">
-                  What type of business do you operate?
+                  What kind of business do you run?
                 </label>
                 <select 
                   {...register('businessType', { required: 'Please select your business type' })}
                   className="input-field"
                 >
                   <option value="">Select business type</option>
-                  <option value="service">Service-based Business</option>
-                  <option value="retail">Retail/E-commerce</option>
-                  <option value="trades">Trades/Construction</option>
-                  <option value="medical">Medical/Healthcare</option>
-                  <option value="hospitality">Hospitality/Restaurant</option>
-                  <option value="professional">Professional Services</option>
+                  <option value="service">Service-based</option>
+                  <option value="product">Product-based</option>
+                  <option value="brick-mortar">Brick & mortar</option>
+                  <option value="online">Online store</option>
+                  <option value="consulting">Consulting/Coaching</option>
                   <option value="other">Other</option>
                 </select>
                 {errors.businessType && (
@@ -87,18 +103,37 @@ export default function Assessment() {
               
               <div>
                 <label className="block text-secondary-700 font-medium mb-2">
-                  What is your approximate annual revenue?
+                  What do you sell or offer?
+                </label>
+                <input 
+                  type="text"
+                  {...register('businessOffering', { 
+                    required: 'Please describe what you sell or offer',
+                    minLength: { value: 3, message: 'Please provide more detail' }
+                  })}
+                  className="input-field"
+                  placeholder="E.g., Web design services, handmade jewelry, business coaching..."
+                />
+                {errors.businessOffering && (
+                  <p className="text-red-500 text-sm mt-1">{errors.businessOffering.message}</p>
+                )}
+              </div>
+              
+              <div>
+                <label className="block text-secondary-700 font-medium mb-2">
+                  What is your annual revenue?
                 </label>
                 <select 
                   {...register('revenue', { required: 'Please select your revenue range' })}
                   className="input-field"
                 >
                   <option value="">Select revenue range</option>
-                  <option value="under100k">Under $100,000</option>
-                  <option value="100k-500k">$100,000 - $500,000</option>
-                  <option value="500k-1m">$500,000 - $1 million</option>
-                  <option value="1m-5m">$1 million - $5 million</option>
-                  <option value="over5m">Over $5 million</option>
+                  <option value="under100k">Less than $100K</option>
+                  <option value="100k-250k">$100K–$250K</option>
+                  <option value="250k-500k">$250K–$500K</option>
+                  <option value="500k-1m">$500K–$1M</option>
+                  <option value="1m-3m">$1M–$3M</option>
+                  <option value="3m+">$3M+</option>
                 </select>
                 {errors.revenue && (
                   <p className="text-red-500 text-sm mt-1">{errors.revenue.message}</p>
@@ -107,18 +142,18 @@ export default function Assessment() {
               
               <div>
                 <label className="block text-secondary-700 font-medium mb-2">
-                  How many employees do you have?
+                  How many people work in your business (including you)?
                 </label>
                 <select 
                   {...register('employees', { required: 'Please select your team size' })}
                   className="input-field"
                 >
                   <option value="">Select team size</option>
-                  <option value="solo">Just me (solopreneur)</option>
-                  <option value="2-5">2-5 employees</option>
-                  <option value="6-15">6-15 employees</option>
-                  <option value="16-50">16-50 employees</option>
-                  <option value="50+">More than 50 employees</option>
+                  <option value="solo">Just me</option>
+                  <option value="2-5">2–5</option>
+                  <option value="6-10">6–10</option>
+                  <option value="11-20">11–20</option>
+                  <option value="20+">20+</option>
                 </select>
                 {errors.employees && (
                   <p className="text-red-500 text-sm mt-1">{errors.employees.message}</p>
@@ -127,91 +162,118 @@ export default function Assessment() {
             </div>
           )}
           
+          {/* SECTION 2: Marketing & Lead Flow */}
           {step === 2 && (
             <div className="space-y-6">
+              <div className="bg-primary-50 border-l-4 border-primary-500 p-4 mb-6">
+                <h3 className="font-bold text-lg mb-1">📈 Marketing & Lead Flow</h3>
+                <p className="text-secondary-700">
+                  Let's look at how you attract and track potential customers.
+                </p>
+              </div>
+              
               <div>
                 <label className="block text-secondary-700 font-medium mb-2">
-                  Which marketing channels do you currently use? (Select all that apply)
+                  Where do most of your leads/customers come from? (Select all that apply)
                 </label>
                 <div className="space-y-2">
                   <div className="flex items-center">
                     <input 
                       type="checkbox" 
-                      id="social-media" 
-                      value="social-media"
-                      {...register('marketingChannels')}
+                      id="referrals" 
+                      value="referrals"
+                      {...register('leadSources')}
                       className="h-5 w-5 text-primary-600 rounded"
                     />
-                    <label htmlFor="social-media" className="ml-2">Social Media</label>
+                    <label htmlFor="referrals" className="ml-2">Referrals</label>
+                  </div>
+                  <div className="flex items-center">
+                    <input 
+                      type="checkbox" 
+                      id="walk-ins" 
+                      value="walk-ins"
+                      {...register('leadSources')}
+                      className="h-5 w-5 text-primary-600 rounded"
+                    />
+                    <label htmlFor="walk-ins" className="ml-2">Walk-ins</label>
+                  </div>
+                  <div className="flex items-center">
+                    <input 
+                      type="checkbox" 
+                      id="social-media" 
+                      value="social-media"
+                      {...register('leadSources')}
+                      className="h-5 w-5 text-primary-600 rounded"
+                    />
+                    <label htmlFor="social-media" className="ml-2">Social media</label>
                   </div>
                   <div className="flex items-center">
                     <input 
                       type="checkbox" 
                       id="paid-ads" 
                       value="paid-ads"
-                      {...register('marketingChannels')}
+                      {...register('leadSources')}
                       className="h-5 w-5 text-primary-600 rounded"
                     />
-                    <label htmlFor="paid-ads" className="ml-2">Paid Advertising</label>
+                    <label htmlFor="paid-ads" className="ml-2">Paid ads</label>
                   </div>
                   <div className="flex items-center">
                     <input 
                       type="checkbox" 
-                      id="email" 
-                      value="email"
-                      {...register('marketingChannels')}
+                      id="google-search" 
+                      value="google-search"
+                      {...register('leadSources')}
                       className="h-5 w-5 text-primary-600 rounded"
                     />
-                    <label htmlFor="email" className="ml-2">Email Marketing</label>
+                    <label htmlFor="google-search" className="ml-2">Google search</label>
                   </div>
                   <div className="flex items-center">
                     <input 
                       type="checkbox" 
-                      id="seo" 
-                      value="seo"
-                      {...register('marketingChannels')}
+                      id="networking" 
+                      value="networking"
+                      {...register('leadSources')}
                       className="h-5 w-5 text-primary-600 rounded"
                     />
-                    <label htmlFor="seo" className="ml-2">SEO/Content Marketing</label>
+                    <label htmlFor="networking" className="ml-2">Networking</label>
                   </div>
                   <div className="flex items-center">
                     <input 
                       type="checkbox" 
-                      id="word-of-mouth" 
-                      value="word-of-mouth"
-                      {...register('marketingChannels')}
+                      id="email-marketing" 
+                      value="email-marketing"
+                      {...register('leadSources')}
                       className="h-5 w-5 text-primary-600 rounded"
                     />
-                    <label htmlFor="word-of-mouth" className="ml-2">Word of Mouth/Referrals</label>
+                    <label htmlFor="email-marketing" className="ml-2">Email marketing</label>
                   </div>
                   <div className="flex items-center">
                     <input 
                       type="checkbox" 
-                      id="traditional" 
-                      value="traditional"
-                      {...register('marketingChannels')}
+                      id="other-source" 
+                      value="other-source"
+                      {...register('leadSources')}
                       className="h-5 w-5 text-primary-600 rounded"
                     />
-                    <label htmlFor="traditional" className="ml-2">Traditional Advertising (Print, Radio, TV)</label>
+                    <label htmlFor="other-source" className="ml-2">Other</label>
                   </div>
                 </div>
               </div>
               
               <div>
                 <label className="block text-secondary-700 font-medium mb-2">
-                  How do you currently track leads and customer interactions?
+                  How do you track leads and customers?
                 </label>
                 <select 
                   {...register('trackingSystem', { required: 'Please select your tracking method' })}
                   className="input-field"
                 >
                   <option value="">Select tracking method</option>
-                  <option value="crm">CRM software</option>
-                  <option value="spreadsheets">Spreadsheets</option>
-                  <option value="email">Email inbox</option>
-                  <option value="paper">Paper notes/files</option>
-                  <option value="memory">Mental tracking/memory</option>
-                  <option value="none">No formal tracking system</option>
+                  <option value="crm">CRM</option>
+                  <option value="spreadsheet">Spreadsheet</option>
+                  <option value="paper">Paper/Notebook</option>
+                  <option value="none">I don't track them</option>
+                  <option value="other">Other</option>
                 </select>
                 {errors.trackingSystem && (
                   <p className="text-red-500 text-sm mt-1">{errors.trackingSystem.message}</p>
@@ -220,23 +282,29 @@ export default function Assessment() {
             </div>
           )}
           
+          {/* SECTION 3: Sales & Follow-Up */}
           {step === 3 && (
             <div className="space-y-6">
+              <div className="bg-primary-50 border-l-4 border-primary-500 p-4 mb-6">
+                <h3 className="font-bold text-lg mb-1">💬 Sales & Follow-Up</h3>
+                <p className="text-secondary-700">
+                  Let's explore how you convert leads and maximize customer value.
+                </p>
+              </div>
+              
               <div>
                 <label className="block text-secondary-700 font-medium mb-2">
-                  How would you describe your follow-up process with leads and customers?
+                  Do you follow up with leads who don't buy right away?
                 </label>
                 <select 
-                  {...register('followUpProcess', { required: 'Please select your follow-up process' })}
+                  {...register('followUpProcess', { required: 'Please select your follow-up approach' })}
                   className="input-field"
                 >
-                  <option value="">Select follow-up process</option>
-                  <option value="automated">Fully automated system</option>
-                  <option value="semi-automated">Semi-automated (some manual, some automated)</option>
-                  <option value="manual-consistent">Manual but consistent process</option>
-                  <option value="manual-inconsistent">Manual and somewhat inconsistent</option>
-                  <option value="reactive">Reactive (only when customers reach out)</option>
-                  <option value="none">No formal follow-up process</option>
+                  <option value="">Select follow-up approach</option>
+                  <option value="manual">Yes – manually</option>
+                  <option value="automated">Yes – automated</option>
+                  <option value="no">No</option>
+                  <option value="unsure">Not sure</option>
                 </select>
                 {errors.followUpProcess && (
                   <p className="text-red-500 text-sm mt-1">{errors.followUpProcess.message}</p>
@@ -245,59 +313,67 @@ export default function Assessment() {
               
               <div>
                 <label className="block text-secondary-700 font-medium mb-2">
-                  What's your biggest business challenge right now?
+                  Do you offer upgrades, add-ons, or upsells after the first sale?
                 </label>
-                <textarea 
-                  {...register('biggestChallenge', { 
-                    required: 'Please share your biggest business challenge',
-                    minLength: { value: 10, message: 'Please provide more detail' }
-                  })}
-                  className="input-field min-h-[120px]"
-                  placeholder="E.g., Finding new customers, managing cash flow, scaling operations..."
-                ></textarea>
-                {errors.biggestChallenge && (
-                  <p className="text-red-500 text-sm mt-1">{errors.biggestChallenge.message}</p>
+                <select 
+                  {...register('offerUpsells', { required: 'Please select an option' })}
+                  className="input-field"
+                >
+                  <option value="">Select an option</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                  <option value="unsure">I'm not sure</option>
+                </select>
+                {errors.offerUpsells && (
+                  <p className="text-red-500 text-sm mt-1">{errors.offerUpsells.message}</p>
                 )}
               </div>
             </div>
           )}
 
+          {/* SECTION 4: Profit Potential & Bottlenecks */}
           {step === 4 && (
             <div className="space-y-6">
               <div className="bg-primary-50 border-l-4 border-primary-500 p-4 mb-6">
-                <h3 className="font-bold text-lg mb-2">Jumpstart 12 Framework</h3>
+                <h3 className="font-bold text-lg mb-1">💡 Profit Potential & Bottlenecks</h3>
                 <p className="text-secondary-700">
-                  To help uncover hidden profit leaks in your business and suggest ways to fix them, please answer these 12 quick questions below.
+                  Let's identify your biggest opportunities for improvement.
                 </p>
               </div>
               
               <div>
                 <label className="block text-secondary-700 font-medium mb-2">
-                  Your Detailed Business Information
+                  How do you decide what to charge for your products or services?
+                </label>
+                <select 
+                  {...register('pricingStrategy', { required: 'Please select your pricing approach' })}
+                  className="input-field"
+                >
+                  <option value="">Select pricing approach</option>
+                  <option value="match-competitors">I match competitors</option>
+                  <option value="cost-plus">I price based on cost + margin</option>
+                  <option value="value-based">I base it on value</option>
+                  <option value="unsure">I'm not sure</option>
+                </select>
+                {errors.pricingStrategy && (
+                  <p className="text-red-500 text-sm mt-1">{errors.pricingStrategy.message}</p>
+                )}
+              </div>
+              
+              <div>
+                <label className="block text-secondary-700 font-medium mb-2">
+                  If you could fix or improve one part of your business right now, what would it be?
                 </label>
                 <textarea 
-                  {...register('jumpstart12Answers', { 
-                    required: 'Please answer the Jumpstart 12 questions',
-                    minLength: { value: 50, message: 'Please provide more detailed answers' }
+                  {...register('biggestImprovement', { 
+                    required: 'Please share what you would improve',
+                    minLength: { value: 10, message: 'Please provide more detail' }
                   })}
-                  className="input-field min-h-[400px]"
-                  placeholder={`Please answer each question below:
-
-1. What type of business do you run?  
-2. What is your annual revenue (rough estimate is fine)?  
-3. How many people work in your business (including you)?  
-4. Where do most of your leads or customers come from?  
-5. How do you keep track of leads and customers (CRM, spreadsheet, notebook, etc.)?  
-6. Do you follow up with leads who don't buy right away? If yes, how?  
-7. What's the biggest challenge your business is facing right now?  
-8. What happens after someone buys from you? Do they buy again?  
-9. Do you offer any add-ons, upgrades, or other services after the first sale?  
-10. Do you get referrals from happy customers? How do you encourage them?  
-11. How do you decide what to charge for your products/services?  
-12. What's one thing you wish you could improve or automate in your business?`}
+                  className="input-field min-h-[120px]"
+                  placeholder="E.g., Getting more leads, improving cash flow, automating follow-ups..."
                 ></textarea>
-                {errors.jumpstart12Answers && (
-                  <p className="text-red-500 text-sm mt-1">{errors.jumpstart12Answers.message}</p>
+                {errors.biggestImprovement && (
+                  <p className="text-red-500 text-sm mt-1">{errors.biggestImprovement.message}</p>
                 )}
               </div>
             </div>

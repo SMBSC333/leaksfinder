@@ -6,14 +6,23 @@ import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 
 type FormData = {
+  // Section 1: Business Basics
   businessType: string
+  businessOffering: string
   revenue: string
   employees: string
-  marketingChannels: string[]
+  
+  // Section 2: Marketing & Lead Flow
+  leadSources: string[]
   trackingSystem: string
+  
+  // Section 3: Sales & Follow-Up
   followUpProcess: string
-  biggestChallenge: string
-  jumpstart12Answers?: string
+  offerUpsells: string
+  
+  // Section 4: Profit Potential & Bottlenecks
+  pricingStrategy: string
+  biggestImprovement: string
 }
 
 type ProfitLeak = {
@@ -76,11 +85,10 @@ export default function Results() {
     // Map business type to readable format
     const businessTypeMap: Record<string, string> = {
       'service': 'service-based business',
-      'retail': 'retail/e-commerce business',
-      'trades': 'trades/construction business',
-      'medical': 'medical/healthcare practice',
-      'hospitality': 'hospitality/restaurant business',
-      'professional': 'professional services firm',
+      'product': 'product-based business',
+      'brick-mortar': 'brick & mortar business',
+      'online': 'online store',
+      'consulting': 'consulting/coaching business',
       'other': 'business'
     }
     
@@ -89,176 +97,124 @@ export default function Results() {
     // Generate profit leaks based on form data
     const profitLeaks: ProfitLeak[] = []
     
-    // Check if we have Jumpstart 12 answers
-    const hasDetailedAnswers = data.jumpstart12Answers && data.jumpstart12Answers.length > 50
-    
     // Check tracking system
-    if (['spreadsheets', 'email', 'paper', 'memory', 'none'].includes(data.trackingSystem)) {
-      const leak: ProfitLeak = {
+    if (['spreadsheet', 'paper', 'none'].includes(data.trackingSystem)) {
+      profitLeaks.push({
         title: 'Inadequate Lead & Customer Tracking',
         description: `Your ${data.trackingSystem === 'none' ? 'lack of a' : data.trackingSystem} tracking system is likely causing leads to fall through the cracks. Without a robust CRM, you're probably missing follow-up opportunities and losing potential revenue.`,
-        potentialImpact: 'High'
-      }
-      
-      // Add actionable insights if we have detailed answers
-      if (hasDetailedAnswers) {
-        leak.actionableInsights = [
+        potentialImpact: 'High',
+        actionableInsights: [
           'Implement a simple CRM system designed for your business size and type',
           'Create a standardized process for entering all new leads and contacts',
           'Schedule weekly time to review your pipeline and identify stalled opportunities'
         ]
-      }
-      
-      profitLeaks.push(leak)
+      })
     }
     
     // Check follow-up process
-    if (['manual-inconsistent', 'reactive', 'none'].includes(data.followUpProcess)) {
-      const leak: ProfitLeak = {
+    if (['no', 'unsure'].includes(data.followUpProcess)) {
+      profitLeaks.push({
         title: 'Inconsistent Follow-Up Process',
         description: 'Your current follow-up approach is reactive or inconsistent, which typically results in lost sales opportunities. Systematic follow-up can increase conversion rates by 30-50%.',
-        potentialImpact: 'High'
-      }
-      
-      if (hasDetailedAnswers) {
-        leak.actionableInsights = [
+        potentialImpact: 'High',
+        actionableInsights: [
           'Create a standardized follow-up sequence with specific timing',
           'Develop email or message templates for common follow-up scenarios',
           'Set up automated reminders to ensure consistent follow-up execution'
         ]
-      }
-      
-      profitLeaks.push(leak)
+      })
+    }
+    
+    // Check upsells
+    if (['no', 'unsure'].includes(data.offerUpsells)) {
+      profitLeaks.push({
+        title: 'Missed Upsell Opportunities',
+        description: 'You\'re not maximizing the value of each customer by offering additional products or services. This is leaving significant revenue on the table with every transaction.',
+        potentialImpact: 'Medium',
+        actionableInsights: [
+          'Identify 2-3 natural upsell or cross-sell opportunities for your main offerings',
+          'Create a simple script or process for offering these additional options',
+          'Train your team on how to present these options as added value, not just "selling more"'
+        ]
+      })
+    }
+    
+    // Check pricing strategy
+    if (['match-competitors', 'unsure'].includes(data.pricingStrategy)) {
+      profitLeaks.push({
+        title: 'Suboptimal Pricing Strategy',
+        description: 'Your approach to pricing may be leaving significant profit on the table. Matching competitors or lacking a clear strategy often leads to underpricing and reduced margins.',
+        potentialImpact: 'Critical',
+        actionableInsights: [
+          'Conduct a value-based pricing analysis for your top products/services',
+          'Test incremental price increases (10-15%) with new customers',
+          'Enhance your value communication to justify premium pricing'
+        ]
+      })
     }
     
     // Check marketing channels
-    if (!data.marketingChannels || data.marketingChannels.length < 3) {
-      const leak: ProfitLeak = {
+    if (!data.leadSources || data.leadSources.length < 3) {
+      profitLeaks.push({
         title: 'Limited Marketing Channels',
-        description: 'You\'re relying on too few marketing channels, which limits your reach and makes your business vulnerable to changes in any single platform or method.',
-        potentialImpact: 'Medium'
-      }
-      
-      if (hasDetailedAnswers) {
-        leak.actionableInsights = [
+        description: 'You\'re relying on too few lead sources, which limits your reach and makes your business vulnerable to changes in any single channel.',
+        potentialImpact: 'Medium',
+        actionableInsights: [
           'Identify 2-3 new marketing channels that align with your target audience',
           'Start with small tests on each new channel before scaling investment',
           'Create a simple tracking system to measure which channels produce the best ROI'
         ]
-      }
-      
-      profitLeaks.push(leak)
+      })
     }
     
-    // Check team size vs. revenue for efficiency
-    if (
-      (data.revenue === 'under100k' && data.employees === '6-15') ||
-      (data.revenue === '100k-500k' && data.employees === '16-50') ||
-      (data.revenue === '500k-1m' && data.employees === '50+')
-    ) {
-      const leak: ProfitLeak = {
-        title: 'Operational Inefficiency',
-        description: 'Your employee count seems high relative to your revenue, suggesting possible operational inefficiencies or underutilization of staff resources.',
-        potentialImpact: 'High'
-      }
-      
-      if (hasDetailedAnswers) {
-        leak.actionableInsights = [
-          'Conduct a workflow audit to identify bottlenecks and redundancies',
-          'Implement time tracking to understand where employee hours are being spent',
-          'Consider automation tools for repetitive administrative tasks'
-        ]
-      }
-      
-      profitLeaks.push(leak)
-    }
-    
-    // Add a leak based on their biggest challenge
-    if (data.biggestChallenge.toLowerCase().includes('customer') || data.biggestChallenge.toLowerCase().includes('lead')) {
-      const leak: ProfitLeak = {
+    // Add a leak based on their biggest improvement area
+    if (data.biggestImprovement.toLowerCase().includes('customer') || data.biggestImprovement.toLowerCase().includes('lead')) {
+      profitLeaks.push({
         title: 'Customer Acquisition Challenges',
         description: 'Your biggest challenge involves finding or converting customers, which often indicates issues with your marketing messaging, targeting, or sales process.',
-        potentialImpact: 'High'
-      }
-      
-      if (hasDetailedAnswers) {
-        leak.actionableInsights = [
+        potentialImpact: 'High',
+        actionableInsights: [
           'Revisit your ideal customer profile and ensure your messaging speaks directly to their needs',
           'Analyze your sales conversion process to identify where prospects are dropping off',
           'Test different value propositions to see which resonates most with your target market'
         ]
-      }
-      
-      profitLeaks.push(leak)
-    } else if (data.biggestChallenge.toLowerCase().includes('cash') || data.biggestChallenge.toLowerCase().includes('finance')) {
-      const leak: ProfitLeak = {
+      })
+    } else if (data.biggestImprovement.toLowerCase().includes('cash') || data.biggestImprovement.toLowerCase().includes('finance')) {
+      profitLeaks.push({
         title: 'Cash Flow Management Issues',
         description: 'Your cash flow challenges may be stemming from inconsistent invoicing, lack of financial forecasting, or insufficient profit margins on your products/services.',
-        potentialImpact: 'Critical'
-      }
-      
-      if (hasDetailedAnswers) {
-        leak.actionableInsights = [
+        potentialImpact: 'Critical',
+        actionableInsights: [
           'Implement a weekly cash flow forecasting process',
           'Review your pricing strategy and consider increases where value justifies it',
           'Analyze payment terms and consider incentives for early payment'
         ]
-      }
-      
-      profitLeaks.push(leak)
-    } else if (data.biggestChallenge.toLowerCase().includes('time') || data.biggestChallenge.toLowerCase().includes('busy')) {
-      const leak: ProfitLeak = {
+      })
+    } else if (data.biggestImprovement.toLowerCase().includes('time') || data.biggestImprovement.toLowerCase().includes('busy')) {
+      profitLeaks.push({
         title: 'Time Management & Delegation Gaps',
         description: 'You\'re likely spending too much time on low-value activities that could be automated, delegated, or eliminated, preventing you from focusing on growth.',
-        potentialImpact: 'Medium'
-      }
-      
-      if (hasDetailedAnswers) {
-        leak.actionableInsights = [
+        potentialImpact: 'Medium',
+        actionableInsights: [
           'Track your time for one week to identify where your hours are going',
           'Create standard operating procedures (SOPs) for recurring tasks',
           'Identify your highest-value activities and block time for them first'
         ]
-      }
-      
-      profitLeaks.push(leak)
+      })
     }
     
     // If we don't have enough leaks yet, add some general ones
     if (profitLeaks.length < 3) {
-      const leak: ProfitLeak = {
+      profitLeaks.push({
         title: 'Untapped Customer Value',
         description: 'Most businesses fail to maximize revenue from existing customers. You may be missing opportunities for upsells, cross-sells, or implementing a systematic referral program.',
-        potentialImpact: 'Medium'
-      }
-      
-      if (hasDetailedAnswers) {
-        leak.actionableInsights = [
+        potentialImpact: 'Medium',
+        actionableInsights: [
           'Map your customer journey to identify natural upsell/cross-sell opportunities',
           'Create a formal referral program with incentives for both parties',
           'Segment your customer base and develop targeted offers for each segment'
         ]
-      }
-      
-      profitLeaks.push(leak)
-      
-      if (profitLeaks.length < 3) {
-        const pricingLeak: ProfitLeak = {
-          title: 'Pricing Strategy Weaknesses',
-          description: 'Many small businesses underprice their offerings or fail to communicate value effectively, leaving significant profit on the table with each transaction.',
-          potentialImpact: 'Medium'
-        }
-        
-        if (hasDetailedAnswers) {
-          pricingLeak.actionableInsights = [
-            'Conduct a competitive pricing analysis in your market',
-            'Test a 10-15% price increase on select offerings and measure the response',
-            'Enhance your value communication to justify premium pricing'
-          ]
-        }
-        
-        profitLeaks.push(pricingLeak)
-      }
+      })
     }
     
     // Limit to 3-5 leaks
