@@ -12,20 +12,33 @@ export async function POST(request: Request) {
     
     // Extract the form data
     const {
+      // Section 1: Business Snapshot
       businessType,
       businessOffering,
       revenue,
       employees,
+      growthPlan,
+      
+      // Section 2: Lead Flow & Sales Systems
       leadSources,
       trackingSystem,
       followUpProcess,
-      offerUpsells,
+      
+      // Section 3: Pricing, Profit & Value Leaks
       pricingStrategy,
-      biggestImprovement
+      profitAwareness,
+      valueAwareness,
+      expenseReview,
+      automationPotential,
+      
+      // Section 4: Financial Habits & Exit Awareness
+      financialReviewFrequency,
+      cashFlowTracking,
+      businessValuation
     } = body
     
     // Validate required fields
-    if (!businessType || !businessOffering || !revenue || !trackingSystem || !followUpProcess || !biggestImprovement) {
+    if (!businessType || !businessOffering || !revenue || !trackingSystem || !followUpProcess) {
       return NextResponse.json(
         { error: 'Missing required fields' },
         { status: 400 }
@@ -38,16 +51,29 @@ export async function POST(request: Request) {
 
       Analyze the following business information and identify 3–5 profit leaks based on the Jumpstart 12 framework:
 
+      BUSINESS SNAPSHOT:
       1. Business Type: ${businessType}
       2. Business Offering: ${businessOffering}
       3. Annual Revenue: ${revenue}
       4. Team Size: ${employees}
-      5. Lead Sources: ${leadSources ? leadSources.join(', ') : 'Not specified'}
-      6. Customer Tracking System: ${trackingSystem}
-      7. Follow-up Process with Leads: ${followUpProcess}
-      8. Offers Upsells/Add-ons: ${offerUpsells}
+      5. Growth Plan: ${growthPlan}
+
+      LEAD FLOW & SALES SYSTEMS:
+      6. Lead Sources: ${leadSources ? leadSources.join(', ') : 'Not specified'}
+      7. Customer Tracking System: ${trackingSystem}
+      8. Follow-up Process with Leads: ${followUpProcess}
+
+      PRICING, PROFIT & VALUE LEAKS:
       9. Pricing Strategy: ${pricingStrategy}
-      10. Biggest Desired Improvement: "${biggestImprovement}"
+      10. Profit Awareness: ${profitAwareness}
+      11. Value Awareness: ${valueAwareness}
+      12. Expense Review Frequency: ${expenseReview}
+      13. Automation Potential: ${automationPotential}
+
+      FINANCIAL HABITS & EXIT AWARENESS:
+      14. Financial Review Frequency: ${financialReviewFrequency}
+      15. Cash Flow Tracking: ${cashFlowTracking}
+      16. Business Valuation Awareness: ${businessValuation}
 
       For each profit leak:
       1. Give it a clear, conversational title

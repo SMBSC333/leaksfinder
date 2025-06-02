@@ -6,23 +6,29 @@ import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 
 type FormData = {
-  // Section 1: Business Basics
+  // Section 1: Business Snapshot
   businessType: string
   businessOffering: string
   revenue: string
   employees: string
+  growthPlan: string
   
-  // Section 2: Marketing & Lead Flow
+  // Section 2: Lead Flow & Sales Systems
   leadSources: string[]
   trackingSystem: string
-  
-  // Section 3: Sales & Follow-Up
   followUpProcess: string
-  offerUpsells: string
   
-  // Section 4: Profit Potential & Bottlenecks
+  // Section 3: Pricing, Profit & Value Leaks
   pricingStrategy: string
-  biggestImprovement: string
+  profitAwareness: string
+  valueAwareness: string
+  expenseReview: string
+  automationPotential: string
+  
+  // Section 4: Financial Habits & Exit Awareness
+  financialReviewFrequency: string
+  cashFlowTracking: string
+  businessValuation: string
 }
 
 export default function Assessment() {
@@ -70,11 +76,11 @@ export default function Assessment() {
         </div>
         
         <form onSubmit={handleSubmit(onSubmit)}>
-          {/* SECTION 1: Business Basics */}
+          {/* SECTION 1: Business Snapshot */}
           {step === 1 && (
             <div className="space-y-6">
               <div className="bg-primary-50 border-l-4 border-primary-500 p-4 mb-6">
-                <h3 className="font-bold text-lg mb-1">🧩 Business Basics</h3>
+                <h3 className="font-bold text-lg mb-1">🧩 Business Snapshot</h3>
                 <p className="text-secondary-700">
                   Let's start with some fundamental information about your business.
                 </p>
@@ -159,16 +165,35 @@ export default function Assessment() {
                   <p className="text-red-500 text-sm mt-1">{errors.employees.message}</p>
                 )}
               </div>
+              
+              <div>
+                <label className="block text-secondary-700 font-medium mb-2">
+                  Are you planning to grow, maintain, or exit your business in the next 2–3 years?
+                </label>
+                <select 
+                  {...register('growthPlan', { required: 'Please select your business plan' })}
+                  className="input-field"
+                >
+                  <option value="">Select your plan</option>
+                  <option value="grow">Grow</option>
+                  <option value="maintain">Maintain</option>
+                  <option value="exit">Exit</option>
+                  <option value="unsure">Not sure</option>
+                </select>
+                {errors.growthPlan && (
+                  <p className="text-red-500 text-sm mt-1">{errors.growthPlan.message}</p>
+                )}
+              </div>
             </div>
           )}
           
-          {/* SECTION 2: Marketing & Lead Flow */}
+          {/* SECTION 2: Lead Flow & Sales Systems */}
           {step === 2 && (
             <div className="space-y-6">
               <div className="bg-primary-50 border-l-4 border-primary-500 p-4 mb-6">
-                <h3 className="font-bold text-lg mb-1">📈 Marketing & Lead Flow</h3>
+                <h3 className="font-bold text-lg mb-1">📈 Lead Flow & Sales Systems</h3>
                 <p className="text-secondary-700">
-                  Let's look at how you attract and track potential customers.
+                  Let's look at how you attract and convert potential customers.
                 </p>
               </div>
               
@@ -279,18 +304,6 @@ export default function Assessment() {
                   <p className="text-red-500 text-sm mt-1">{errors.trackingSystem.message}</p>
                 )}
               </div>
-            </div>
-          )}
-          
-          {/* SECTION 3: Sales & Follow-Up */}
-          {step === 3 && (
-            <div className="space-y-6">
-              <div className="bg-primary-50 border-l-4 border-primary-500 p-4 mb-6">
-                <h3 className="font-bold text-lg mb-1">💬 Sales & Follow-Up</h3>
-                <p className="text-secondary-700">
-                  Let's explore how you convert leads and maximize customer value.
-                </p>
-              </div>
               
               <div>
                 <label className="block text-secondary-700 font-medium mb-2">
@@ -310,34 +323,16 @@ export default function Assessment() {
                   <p className="text-red-500 text-sm mt-1">{errors.followUpProcess.message}</p>
                 )}
               </div>
-              
-              <div>
-                <label className="block text-secondary-700 font-medium mb-2">
-                  Do you offer upgrades, add-ons, or upsells after the first sale?
-                </label>
-                <select 
-                  {...register('offerUpsells', { required: 'Please select an option' })}
-                  className="input-field"
-                >
-                  <option value="">Select an option</option>
-                  <option value="yes">Yes</option>
-                  <option value="no">No</option>
-                  <option value="unsure">I'm not sure</option>
-                </select>
-                {errors.offerUpsells && (
-                  <p className="text-red-500 text-sm mt-1">{errors.offerUpsells.message}</p>
-                )}
-              </div>
             </div>
           )}
-
-          {/* SECTION 4: Profit Potential & Bottlenecks */}
-          {step === 4 && (
+          
+          {/* SECTION 3: Pricing, Profit & Value Leaks */}
+          {step === 3 && (
             <div className="space-y-6">
               <div className="bg-primary-50 border-l-4 border-primary-500 p-4 mb-6">
-                <h3 className="font-bold text-lg mb-1">💡 Profit Potential & Bottlenecks</h3>
+                <h3 className="font-bold text-lg mb-1">💰 Pricing, Profit & Value Leaks</h3>
                 <p className="text-secondary-700">
-                  Let's identify your biggest opportunities for improvement.
+                  Let's explore how you price your offerings and manage profitability.
                 </p>
               </div>
               
@@ -350,9 +345,9 @@ export default function Assessment() {
                   className="input-field"
                 >
                   <option value="">Select pricing approach</option>
-                  <option value="match-competitors">I match competitors</option>
-                  <option value="cost-plus">I price based on cost + margin</option>
-                  <option value="value-based">I base it on value</option>
+                  <option value="match-competitors">Match competitors</option>
+                  <option value="cost-plus">Cost + margin</option>
+                  <option value="value-based">Value-based pricing</option>
                   <option value="unsure">I'm not sure</option>
                 </select>
                 {errors.pricingStrategy && (
@@ -362,18 +357,208 @@ export default function Assessment() {
               
               <div>
                 <label className="block text-secondary-700 font-medium mb-2">
-                  If you could fix or improve one part of your business right now, what would it be?
+                  Do you know which products or services bring in the most profit (not just revenue)?
                 </label>
-                <textarea 
-                  {...register('biggestImprovement', { 
-                    required: 'Please share what you would improve',
-                    minLength: { value: 10, message: 'Please provide more detail' }
-                  })}
-                  className="input-field min-h-[120px]"
-                  placeholder="E.g., Getting more leads, improving cash flow, automating follow-ups..."
-                ></textarea>
-                {errors.biggestImprovement && (
-                  <p className="text-red-500 text-sm mt-1">{errors.biggestImprovement.message}</p>
+                <select 
+                  {...register('profitAwareness', { required: 'Please select an option' })}
+                  className="input-field"
+                >
+                  <option value="">Select an option</option>
+                  <option value="yes">Yes</option>
+                  <option value="kind-of">Kind of</option>
+                  <option value="no">No</option>
+                </select>
+                {errors.profitAwareness && (
+                  <p className="text-red-500 text-sm mt-1">{errors.profitAwareness.message}</p>
+                )}
+              </div>
+              
+              <div>
+                <label className="block text-secondary-700 font-medium mb-2">
+                  Do you know the real value your product or service creates for your customer?
+                </label>
+                <div className="space-y-2">
+                  <div className="flex items-center">
+                    <input 
+                      type="radio" 
+                      id="value-yes" 
+                      value="yes"
+                      {...register('valueAwareness', { required: 'Please select an option' })}
+                      className="h-5 w-5 text-primary-600"
+                    />
+                    <label htmlFor="value-yes" className="ml-2">Yes — I can clearly describe it</label>
+                  </div>
+                  <div className="flex items-center">
+                    <input 
+                      type="radio" 
+                      id="value-somewhat" 
+                      value="somewhat"
+                      {...register('valueAwareness', { required: 'Please select an option' })}
+                      className="h-5 w-5 text-primary-600"
+                    />
+                    <label htmlFor="value-somewhat" className="ml-2">Somewhat — I focus more on features or deliverables</label>
+                  </div>
+                  <div className="flex items-center">
+                    <input 
+                      type="radio" 
+                      id="value-not-really" 
+                      value="not-really"
+                      {...register('valueAwareness', { required: 'Please select an option' })}
+                      className="h-5 w-5 text-primary-600"
+                    />
+                    <label htmlFor="value-not-really" className="ml-2">Not really — I think we're undercharging</label>
+                  </div>
+                  <div className="flex items-center">
+                    <input 
+                      type="radio" 
+                      id="value-never" 
+                      value="never"
+                      {...register('valueAwareness', { required: 'Please select an option' })}
+                      className="h-5 w-5 text-primary-600"
+                    />
+                    <label htmlFor="value-never" className="ml-2">I've never thought about it</label>
+                  </div>
+                </div>
+                {errors.valueAwareness && (
+                  <p className="text-red-500 text-sm mt-1">{errors.valueAwareness.message}</p>
+                )}
+              </div>
+              
+              <div>
+                <label className="block text-secondary-700 font-medium mb-2">
+                  When was the last time you reviewed or cut unnecessary expenses?
+                </label>
+                <select 
+                  {...register('expenseReview', { required: 'Please select an option' })}
+                  className="input-field"
+                >
+                  <option value="">Select an option</option>
+                  <option value="this-month">This month</option>
+                  <option value="last-6-months">Last 6 months</option>
+                  <option value="over-6-months">Over 6 months ago</option>
+                  <option value="never">I don't really do that</option>
+                </select>
+                {errors.expenseReview && (
+                  <p className="text-red-500 text-sm mt-1">{errors.expenseReview.message}</p>
+                )}
+              </div>
+              
+              <div>
+                <label className="block text-secondary-700 font-medium mb-2">
+                  Are there tasks or roles in your business that could be outsourced or automated to save time or payroll?
+                </label>
+                <select 
+                  {...register('automationPotential', { required: 'Please select an option' })}
+                  className="input-field"
+                >
+                  <option value="">Select an option</option>
+                  <option value="yes">Yes</option>
+                  <option value="maybe">Maybe</option>
+                  <option value="no">No</option>
+                  <option value="unsure">Not sure</option>
+                </select>
+                {errors.automationPotential && (
+                  <p className="text-red-500 text-sm mt-1">{errors.automationPotential.message}</p>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* SECTION 4: Financial Habits & Exit Awareness */}
+          {step === 4 && (
+            <div className="space-y-6">
+              <div className="bg-primary-50 border-l-4 border-primary-500 p-4 mb-6">
+                <h3 className="font-bold text-lg mb-1">📉 Financial Habits & Exit Awareness</h3>
+                <p className="text-secondary-700">
+                  Let's explore your financial management practices and long-term planning.
+                </p>
+              </div>
+              
+              <div>
+                <label className="block text-secondary-700 font-medium mb-2">
+                  How often do you review your financial reports (P&L, cash flow, balance sheet)?
+                </label>
+                <select 
+                  {...register('financialReviewFrequency', { required: 'Please select an option' })}
+                  className="input-field"
+                >
+                  <option value="">Select an option</option>
+                  <option value="weekly">Weekly</option>
+                  <option value="monthly">Monthly</option>
+                  <option value="quarterly">Quarterly</option>
+                  <option value="rarely">Rarely or never</option>
+                </select>
+                {errors.financialReviewFrequency && (
+                  <p className="text-red-500 text-sm mt-1">{errors.financialReviewFrequency.message}</p>
+                )}
+              </div>
+              
+              <div>
+                <label className="block text-secondary-700 font-medium mb-2">
+                  Do you currently track cash flow separately from your profit or revenue?
+                </label>
+                <select 
+                  {...register('cashFlowTracking', { required: 'Please select an option' })}
+                  className="input-field"
+                >
+                  <option value="">Select an option</option>
+                  <option value="yes">Yes</option>
+                  <option value="no">No</option>
+                  <option value="unsure">I don't know the difference</option>
+                </select>
+                {errors.cashFlowTracking && (
+                  <p className="text-red-500 text-sm mt-1">{errors.cashFlowTracking.message}</p>
+                )}
+              </div>
+              
+              <div>
+                <label className="block text-secondary-700 font-medium mb-2">
+                  If someone offered to buy your business today, would you know what it's worth?
+                </label>
+                <div className="space-y-2">
+                  <div className="flex items-center">
+                    <input 
+                      type="radio" 
+                      id="valuation-yes" 
+                      value="yes"
+                      {...register('businessValuation', { required: 'Please select an option' })}
+                      className="h-5 w-5 text-primary-600"
+                    />
+                    <label htmlFor="valuation-yes" className="ml-2">Yes, I have a strong idea</label>
+                  </div>
+                  <div className="flex items-center">
+                    <input 
+                      type="radio" 
+                      id="valuation-kind-of" 
+                      value="kind-of"
+                      {...register('businessValuation', { required: 'Please select an option' })}
+                      className="h-5 w-5 text-primary-600"
+                    />
+                    <label htmlFor="valuation-kind-of" className="ml-2">Kind of, but I'd need help</label>
+                  </div>
+                  <div className="flex items-center">
+                    <input 
+                      type="radio" 
+                      id="valuation-no" 
+                      value="no"
+                      {...register('businessValuation', { required: 'Please select an option' })}
+                      className="h-5 w-5 text-primary-600"
+                    />
+                    <label htmlFor="valuation-no" className="ml-2">No clue</label>
+                  </div>
+                  <div className="flex items-center">
+                    <input 
+                      type="radio" 
+                      id="valuation-never" 
+                      value="never"
+                      {...register('businessValuation', { required: 'Please select an option' })}
+                      className="h-5 w-5 text-primary-600"
+                    />
+                    <label htmlFor="valuation-never" className="ml-2">I've never thought about it</label>
+                  </div>
+                </div>
+                {errors.businessValuation && (
+                  <p className="text-red-500 text-sm mt-1">{errors.businessValuation.message}</p>
                 )}
               </div>
             </div>

@@ -6,23 +6,29 @@ import { motion } from 'framer-motion'
 import { useRouter } from 'next/navigation'
 
 type FormData = {
-  // Section 1: Business Basics
+  // Section 1: Business Snapshot
   businessType: string
   businessOffering: string
   revenue: string
   employees: string
+  growthPlan: string
   
-  // Section 2: Marketing & Lead Flow
+  // Section 2: Lead Flow & Sales Systems
   leadSources: string[]
   trackingSystem: string
-  
-  // Section 3: Sales & Follow-Up
   followUpProcess: string
-  offerUpsells: string
   
-  // Section 4: Profit Potential & Bottlenecks
+  // Section 3: Pricing, Profit & Value Leaks
   pricingStrategy: string
-  biggestImprovement: string
+  profitAwareness: string
+  valueAwareness: string
+  expenseReview: string
+  automationPotential: string
+  
+  // Section 4: Financial Habits & Exit Awareness
+  financialReviewFrequency: string
+  cashFlowTracking: string
+  businessValuation: string
 }
 
 type ProfitLeak = {
