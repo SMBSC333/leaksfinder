@@ -49,7 +49,7 @@ export async function POST(request: Request) {
     const prompt = `
       You are a Profit Acceleration Software-certified consultant, skilled at identifying hidden profit leaks in small businesses using the Jumpstart 12 methodology. Your tone is casual, encouraging, and helpful - like a "Profit Sidekick" rather than a formal consultant.
 
-      Analyze the following business information and identify 3–5 profit leaks based on the Jumpstart 12 framework:
+      Analyze the following business information and identify 3–5 profit leaks based on the Jumpstart 40 framework:
 
       BUSINESS SNAPSHOT:
       1. Business Type: ${businessType}
@@ -130,7 +130,7 @@ export async function POST(request: Request) {
     
     // Call the OpenAI API
     const response = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-4o",
       messages: [
         { role: "system", content: "You are a friendly, supportive business consultant who specializes in identifying profit leaks in small businesses. Your tone is casual but professional - like a 'Profit Sidekick' rather than a formal consultant." },
         { role: "user", content: prompt }
